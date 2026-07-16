@@ -73,10 +73,17 @@ flowchart TB
     METRICS -->|"OTLP"| OTLP_GW
     OTLP_GW -->|"query"| SIGNOZ_UI
 
+<<<<<<< HEAD
     style FastAPI fill:#a7f2bb,stroke:#e94560,stroke-width:2px,color:#fff
     style MCP fill:#16213e,stroke:#0f3460,stroke-width:2px,color:#fff
     style OTel fill:#0f3460,stroke:#533483,stroke-width:2px,color:#fff
     style SigNoz fill:#ccbff2,stroke:#e94560,stroke-width:2px,color:#fff
+=======
+    style FastAPI fill:#99996e,stroke:#e94560,stroke-width:2px,color:#fff
+    style MCP fill:#16213e,stroke:#0f3460,stroke-width:2px,color:#fff
+    style OTel fill:#0f3460,stroke:#533483,stroke-width:2px,color:#fff
+    style SigNoz fill:#b0d6d5,stroke:#e94560,stroke-width:2px,color:#fff
+>>>>>>> e9d0244a31dd097f3b5eadff46b1b72c0fa6ddaf
 ```
 
 ### Pipeline Flow
