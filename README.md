@@ -38,39 +38,58 @@ A **background load injector** continuously submits synthetic tasks every 5 seco
 
 ## Architecture
 
+```mermaid
+flowchart TB
+    subgraph FastAPI["app.py (FastAPI :8081)"]
+        direction TB
+        LI["Load Injector<br/>(5s loop)"] -->|"creates task"| RP["run_pipeline<br/>Orchestrator"]
+        RP -->|"executes"| ET["execute_task<br/>Simulated agent call"]
+        ET -->|"success"| RP
+        ET -->|"failure"| DA["detect_anomaly<br/>Failure / Latency / Cost"]
+        DA -->|"anomaly detected"| SH["sre_heal_loop<br/>MCP-driven healing"]
+        SH -->|"diagnosis & patch"| RP
+    end
+
+    subgraph MCP["SigNoz MCP Server"]
+        MCP_SRV["MCP Server<br/>:8000"]
+    end
+
+    subgraph OTel["OpenTelemetry SDK"]
+        TRACES["Traces<br/>(BatchSpanProcessor)"]
+        METRICS["Metrics<br/>(4 custom counters)"]
+    end
+
+    subgraph SigNoz["SigNoz Observability"]
+        OTLP_GW["OTel Collector<br/>:4317 gRPC / :4318 HTTP"]
+        SIGNOZ_UI["SigNoz UI<br/>:8080<br/>Dashboards + Alerts"]
+    end
+
+    SH -->|"trace search & diagnosis"| MCP_SRV
+    MCP_SRV -->|"failing trace data"| SH
+
+    RP -.->|"span export"| TRACES
+    RP -.->|"counter increment"| METRICS
+    TRACES -->|"OTLP"| OTLP_GW
+    METRICS -->|"OTLP"| OTLP_GW
+    OTLP_GW -->|"query"| SIGNOZ_UI
+
+    style FastAPI fill:#1a1a2e,stroke:#e94560,stroke-width:2px,color:#fff
+    style MCP fill:#16213e,stroke:#0f3460,stroke-width:2px,color:#fff
+    style OTel fill:#0f3460,stroke:#533483,stroke-width:2px,color:#fff
+    style SigNoz fill:#533483,stroke:#e94560,stroke-width:2px,color:#fff
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    app.py (FastAPI)                           │
-│                                                               │
-│  ┌──────────┐   ┌──────────────┐   ┌────────────────────┐    │
-│  │ Load      │──▶│ run_pipeline │──▶│   execute_task     │    │
-│  │ Injector  │   │ (orchestr.)  │   │  (simulated agent  │    │
-│  │ (5s loop) │   │              │   │   call, 30% fail)  │    │
-│  └──────────┘   └──────┬───────┘   └────────┬───────────┘    │
-│                         │                    │                │
-│                         ▼                    ▼                │
-│                  ┌──────────────┐   ┌────────────────────┐    │
-│                  │ sre_heal_loop│◀──│   detect_anomaly   │    │
-│                  │ (MCP-driven) │   │  (failure/latency/ │    │
-│                  │              │   │   cost thresholds) │    │
-│                  └──────┬───────┘   └────────────────────┘    │
-│                         │                                     │
-│                         ▼                                     │
-│                  ┌──────────────────┐                         │
-│                  │   SigNoz MCP     │      OTel Metrics       │
-│                  │   Server :8000   │◀──── (4 counters) ────┐ │
-│                  └────────┬─────────┘                       │ │
-│                           │                                 │ │
-└───────────────────────────┼─────────────────────────────────┘ │
-                            │ OTLP gRPC :4317                    │
-                            ▼                                   │
-                    ┌──────────────┐                             │
-                    │  SigNoz      │◀────────────────────────────┘
-                    │  (localhost  │
-                    │   :8080)     │
-                    │  UI + Alerts │
-                    └──────────────┘
-```
+
+### Pipeline Flow
+
+1. **Background Load Injector** creates a synthetic task every 5 seconds
+2. **`run_pipeline`** orchestrates the execution → calls `execute_task`
+3. **`execute_task`** simulates an agent call with a configurable failure rate (default 30%)
+4. On **success** → metrics counters are incremented, pipeline returns
+5. On **failure** → `detect_anomaly` checks if healing is needed (failure, high latency, or high cost)
+6. **Anomaly found** → `sre_heal_loop` queries the SigNoz MCP Server for trace diagnosis
+7. **MCP Server** returns root-cause diagnosis + auto-generated code patch
+8. **Fallback** — if the MCP server is unreachable, a local fallback healing action is used
+9. **All 4 metric counters** (`pipeline_tasks_total`, `pipeline_task_errors_total`, `pipeline_heals_total`, `pipeline_money_saved_total`) are exported via OTLP to SigNoz
 
 ### Network Topology
 
@@ -462,4 +481,3 @@ Invoke-RestMethod http://localhost:8081/pipeline/stats -Method Get
 - **No subprocess calls** — everything runs in-process
 - **Fully typed** — every function has complete type annotations
 - **Structured logging** — uses Python `logging` module, no `print()` statements
-# PROJECT-HACKATHON-WE-MAKE-DEVS
