@@ -1,0 +1,124 @@
+{
+  "title": "Self-Healing Pipeline ROI Engine",
+  "data": {
+    "widgets": [
+      {
+        "id": 1,
+        "title": "Total Pipeline Executions",
+        "description": "Total tasks processed since application start",
+        "panelTypes": "value",
+        "query": {
+          "builderQueries": {
+            "A": {
+              "dataSource": "metrics",
+              "queryType": "builder",
+              "aggregateOperator": "sum",
+              "expression": "A",
+              "disabled": false,
+              "filters": {
+                "items": [],
+                "op": "AND"
+              },
+              "groupBy": [],
+              "limit": null,
+              "orderBy": [],
+              "metricName": "pipeline_tasks_total",
+              "spaceAggregation": "sum",
+              "timeAggregation": "sum"
+            }
+          },
+          "promQLQueries": [],
+          "clickHouseQueries": []
+        },
+        "yAxis": {},
+        "description": "",
+        "isInternal": false,
+        "queryFormats": {
+          "A": "list"
+        }
+      },
+      {
+        "id": 2,
+        "title": "Automated Healing Interventions",
+        "description": "Number of autonomous self-healing events triggered",
+        "panelTypes": "value",
+        "query": {
+          "builderQueries": {
+            "A": {
+              "dataSource": "metrics",
+              "queryType": "builder",
+              "aggregateOperator": "sum",
+              "expression": "A",
+              "disabled": false,
+              "filters": {
+                "items": [],
+                "op": "AND"
+              },
+              "groupBy": [],
+              "limit": null,
+              "orderBy": [],
+              "metricName": "pipeline_heals_total",
+              "spaceAggregation": "sum",
+              "timeAggregation": "sum"
+            }
+          },
+          "promQLQueries": [],
+          "clickHouseQueries": []
+        },
+        "yAxis": {},
+        "description": "",
+        "isInternal": false,
+        "queryFormats": {
+          "A": "list"
+        }
+      },
+      {
+        "id": 3,
+        "title": "Total Revenue Saved ($)",
+        "description": "Cumulative financial ROI from self-healing automation (USD)",
+        "panelTypes": "timeseries",
+        "query": {
+          "builderQueries": {
+            "A": {
+              "dataSource": "metrics",
+              "queryType": "builder",
+              "aggregateOperator": "sum",
+              "expression": "A",
+              "disabled": false,
+              "filters": {
+                "items": [],
+                "op": "AND"
+              },
+              "groupBy": [],
+              "limit": null,
+              "orderBy": [],
+              "metricName": "pipeline_money_saved_total",
+              "spaceAggregation": "sum",
+              "timeAggregation": "sum"
+            }
+          },
+          "promQLQueries": [],
+          "clickHouseQueries": []
+        },
+        "yAxis": {
+          "left": {
+            "label": "USD",
+            "scale": "linear",
+            "unit": "USD"
+          }
+        },
+        "description": "",
+        "isInternal": false,
+        "queryFormats": {
+          "A": "list"
+        }
+      }
+    ]
+  },
+  "tags": [
+    "hackathon",
+    "self-healing",
+    "sre",
+    "roi"
+  ]
+}

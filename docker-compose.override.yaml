@@ -1,0 +1,86 @@
+# ==============================================================================
+# docker-compose.override.yaml
+# ------------------------------
+#  SigNoz deployment override — WSL2 network compatibility + MCP Server.
+#
+#  Place this file inside signoz/deploy/ alongside the official SigNoz
+#  docker-compose.yaml.  Docker Compose automatically merges overrides.
+#
+#  What it does:
+#    1. Exposes OTLP gRPC (:4317) and HTTP (:4318) on the host so the
+#       native Python pipeline can export traces to SigNoz via localhost.
+#    2. Injects the `signoz-mcp-server` container — a companion that
+#       exposes a Model Context Protocol API for trace search & analysis.
+#    3. Registers `host.docker.internal:host-gateway` on both services
+#       for WSL2 / Docker Desktop host resolution.
+#    4. Attaches the MCP server to the pre-existing `deploy_signoz-network`
+#       so it can resolve `query-service` by container name.
+#
+#  Port map
+#  --------
+#    Container                  Host         Purpose
+#    ────────────────────────────────────────────────────
+#    signoz-otel-collector
+#      :4317  →  :4317         gRPC OTLP  (traces)
+#      :4318  →  :4318         HTTP OTLP  (traces)
+#    signoz-mcp-server
+#      :8000  →  :8000         MCP HTTP API
+# ==============================================================================
+
+version: '3.8'
+
+services:
+  # -- SigNoz OTel Collector --------------------------------------------------
+  # Patch the collector to expose OTLP ports on the host and add
+  # the WSL2 host-gateway alias so the collector can reach back to
+  # the host if needed (e.g. for prometheus remote-write or health hooks).
+  signoz-otel-collector:
+    ports:
+      - "4317:4317"                     # gRPC OTLP — used by the Python pipeline
+      - "4318:4318"                     # HTTP OTLP — fallback / alternative
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # -- SigNoz MCP Server -----------------------------------------------------
+  # Model Context Protocol companion that the Self-Healing SRE Pipeline
+  # queries to fetch failing trace data, diagnose root causes, and
+  # generate code patches at runtime.
+  signoz-mcp-server:
+    image: signoz/signoz-mcp-server:latest
+    container_name: signoz-mcp-server
+    environment:
+      - SIGNOZ_URL=http://query-service:3301   # internal Docker DNS — the
+                                                # override network resolves
+                                                # the `query-service` hostname
+                                                # to the SigNoz query-service
+                                                # container's IP.
+      - SIGNOZ_API_KEY=sk_hackathon_master_key_2026
+      - TRANSPORT_MODE=http
+      - MCP_SERVER_PORT=8000
+      - LOG_LEVEL=debug
+    ports:
+      - "8000:8000"                     # MCP HTTP endpoint — the Python
+                                        # pipeline calls this from the host
+                                        # via http://localhost:8000/mcp/call_tool
+    depends_on:
+      - query-service                   # ensure SigNoz query-service is
+                                        # up before the MCP server starts
+    networks:
+      - signoz-network                  # join the same overlay network so
+                                        # SIGNOZ_URL resolves correctly
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+# -- Network topology ---------------------------------------------------------
+# Reference the network created by the base docker-compose.yaml.
+# Docker Compose names it `deploy_signoz-network` because the project name
+# defaults to the parent directory name (`deploy`) and the internal name
+# is `signoz-network`.
+#
+# Marking it as `external: true` tells Docker Compose not to try to
+# re-create it — the base compose file already handles creation.
+networks:
+  signoz-network:
+    external: true
+    name: deploy_signoz-network

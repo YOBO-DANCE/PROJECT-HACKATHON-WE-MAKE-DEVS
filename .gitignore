@@ -1,0 +1,56 @@
+# ==============================================================================
+# .gitignore — Self-Healing SRE Agent Pipeline
+# ==============================================================================
+
+# -- Virtual environments -----------------------------------------------------
+venv/
+.venv/
+SIGNOZ-HACKATHON/
+*.egg-info/
+dist/
+build/
+*.whl
+
+# -- Python bytecode & caches -------------------------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+
+# -- Environment & secrets ----------------------------------------------------
+.env
+.env.*
+*.key
+*.pem
+*.crt
+!casting.yaml
+!casting.yaml.lock
+
+# -- SigNoz cloned repository (reproducible via Foundry) ----------------------
+signoz/
+
+# -- IDE & editor -------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# -- OS / temp ----------------------------------------------------------------
+*.log
+*.tmp
+*.temp
+
+# -- Docker -------------------------------------------------------------------
+.docker/
+*.tar
+
+# -- Local directories created by tooling -------------------------------------
+pours/

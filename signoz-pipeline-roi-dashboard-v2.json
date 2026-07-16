@@ -1,0 +1,341 @@
+{
+  "title": "Self-Healing Pipeline ROI Engine",
+  "name": "",
+  "description": "Real-time observability dashboard for the autonomous SRE pipeline - tracks task executions, healing interventions, and cumulative revenue saved.",
+  "version": "v5",
+  "tags": [
+    "hackathon",
+    "self-healing",
+    "sre",
+    "roi"
+  ],
+  "uploadedGrafana": false,
+  "panelMap": {},
+  "variables": {},
+  "layout": [
+    {
+      "h": 4,
+      "i": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "moved": false,
+      "static": false,
+      "w": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "h": 4,
+      "i": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+      "moved": false,
+      "static": false,
+      "w": 4,
+      "x": 4,
+      "y": 0
+    },
+    {
+      "h": 4,
+      "i": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+      "moved": false,
+      "static": false,
+      "w": 4,
+      "x": 8,
+      "y": 0
+    },
+    {
+      "h": 8,
+      "i": "d4e5f6a7-b8c9-0123-defa-234567890123",
+      "moved": false,
+      "static": false,
+      "w": 12,
+      "x": 0,
+      "y": 4
+    }
+  ],
+  "widgets": [
+    {
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "title": "Total Pipeline Executions",
+      "description": "Total pipeline tasks processed since application start",
+      "panelTypes": "value",
+      "timePreferance": "GLOBAL_TIME",
+      "yAxisUnit": "none",
+      "bucketCount": 30,
+      "bucketWidth": 0,
+      "columnUnits": {},
+      "fillSpans": false,
+      "isStacked": false,
+      "mergeAllActiveQueries": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "softMax": 0,
+      "softMin": 0,
+      "stackedBarChart": false,
+      "thresholds": [],
+      "selectedLogFields": [],
+      "selectedTracesFields": [],
+      "query": {
+        "queryType": "builder",
+        "id": "q_a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "builder": {
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "functions": [],
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "Executions",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60,
+              "aggregations": [
+                {
+                  "metricName": "pipeline_tasks_total",
+                  "temporality": null,
+                  "timeAggregation": "sum",
+                  "spaceAggregation": "sum",
+                  "reduceTo": "last"
+                }
+              ],
+              "filter": { "expression": "" }
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          { "disabled": false, "legend": "", "name": "A", "query": "" }
+        ],
+        "promql": [
+          { "disabled": false, "legend": "", "name": "A", "query": "" }
+        ]
+      }
+    },
+    {
+      "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+      "title": "Automated Healing Interventions",
+      "description": "Number of autonomous self-healing events triggered by the pipeline",
+      "panelTypes": "value",
+      "timePreferance": "GLOBAL_TIME",
+      "yAxisUnit": "none",
+      "bucketCount": 30,
+      "bucketWidth": 0,
+      "columnUnits": {},
+      "fillSpans": false,
+      "isStacked": false,
+      "mergeAllActiveQueries": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "softMax": 0,
+      "softMin": 0,
+      "stackedBarChart": false,
+      "thresholds": [],
+      "selectedLogFields": [],
+      "selectedTracesFields": [],
+      "query": {
+        "queryType": "builder",
+        "id": "q_b2c3d4e5-f6a7-8901-bcde-f12345678901",
+        "builder": {
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "functions": [],
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "Heals",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60,
+              "aggregations": [
+                {
+                  "metricName": "pipeline_heals_total",
+                  "temporality": null,
+                  "timeAggregation": "sum",
+                  "spaceAggregation": "sum",
+                  "reduceTo": "last"
+                }
+              ],
+              "filter": { "expression": "" }
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          { "disabled": false, "legend": "", "name": "A", "query": "" }
+        ],
+        "promql": [
+          { "disabled": false, "legend": "", "name": "A", "query": "" }
+        ]
+      }
+    },
+    {
+      "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+      "title": "Total Revenue Saved ($)",
+      "description": "Cumulative financial ROI from self-healing automation in USD",
+      "panelTypes": "value",
+      "timePreferance": "GLOBAL_TIME",
+      "yAxisUnit": "USD",
+      "bucketCount": 30,
+      "bucketWidth": 0,
+      "columnUnits": {},
+      "fillSpans": false,
+      "isStacked": false,
+      "mergeAllActiveQueries": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "softMax": 0,
+      "softMin": 0,
+      "stackedBarChart": false,
+      "thresholds": [],
+      "selectedLogFields": [],
+      "selectedTracesFields": [],
+      "query": {
+        "queryType": "builder",
+        "id": "q_c3d4e5f6-a7b8-9012-cdef-123456789012",
+        "builder": {
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "functions": [],
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "Revenue Saved",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60,
+              "aggregations": [
+                {
+                  "metricName": "pipeline_money_saved_total",
+                  "temporality": null,
+                  "timeAggregation": "sum",
+                  "spaceAggregation": "sum",
+                  "reduceTo": "last"
+                }
+              ],
+              "filter": { "expression": "" }
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          { "disabled": false, "legend": "", "name": "A", "query": "" }
+        ],
+        "promql": [
+          { "disabled": false, "legend": "", "name": "A", "query": "" }
+        ]
+      }
+    },
+    {
+      "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
+      "title": "Revenue Saved Over Time",
+      "description": "Cumulative revenue saved trend across pipeline executions",
+      "panelTypes": "graph",
+      "timePreferance": "GLOBAL_TIME",
+      "yAxisUnit": "USD",
+      "bucketCount": 30,
+      "bucketWidth": 0,
+      "columnUnits": {},
+      "fillSpans": false,
+      "isStacked": false,
+      "mergeAllActiveQueries": false,
+      "nullZeroValues": "zero",
+      "opacity": "1",
+      "softMax": 0,
+      "softMin": 0,
+      "stackedBarChart": false,
+      "thresholds": [],
+      "selectedLogFields": [],
+      "selectedTracesFields": [],
+      "query": {
+        "queryType": "builder",
+        "id": "q_d4e5f6a7-b8c9-0123-defa-234567890123",
+        "builder": {
+          "queryData": [
+            {
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "A",
+              "functions": [],
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "Revenue Saved ($)",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "A",
+              "stepInterval": 60,
+              "aggregations": [
+                {
+                  "metricName": "pipeline_money_saved_total",
+                  "temporality": null,
+                  "timeAggregation": "sum",
+                  "spaceAggregation": "sum",
+                  "reduceTo": "sum"
+                }
+              ],
+              "filter": { "expression": "" }
+            },
+            {
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "B",
+              "functions": [],
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "Task Executions",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "B",
+              "stepInterval": 60,
+              "aggregations": [
+                {
+                  "metricName": "pipeline_tasks_total",
+                  "temporality": null,
+                  "timeAggregation": "sum",
+                  "spaceAggregation": "sum",
+                  "reduceTo": "sum"
+                }
+              ],
+              "filter": { "expression": "" }
+            },
+            {
+              "dataSource": "metrics",
+              "disabled": false,
+              "expression": "C",
+              "functions": [],
+              "groupBy": [],
+              "having": { "expression": "" },
+              "legend": "Healing Interventions",
+              "limit": null,
+              "orderBy": [],
+              "queryName": "C",
+              "stepInterval": 60,
+              "aggregations": [
+                {
+                  "metricName": "pipeline_heals_total",
+                  "temporality": null,
+                  "timeAggregation": "sum",
+                  "spaceAggregation": "sum",
+                  "reduceTo": "sum"
+                }
+              ],
+              "filter": { "expression": "" }
+            }
+          ],
+          "queryFormulas": []
+        },
+        "clickhouse_sql": [
+          { "disabled": false, "legend": "", "name": "A", "query": "" }
+        ],
+        "promql": [
+          { "disabled": false, "legend": "", "name": "A", "query": "" }
+        ]
+      }
+    }
+  ]
+}
